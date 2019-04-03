@@ -1,3 +1,4 @@
+// platformer2.0.js
 
 // players avatar
 var Player;
@@ -54,6 +55,8 @@ var Board = {
     } 
 }
 
+// engine
+
 function Spirit(x, y, width, height, colour) {
     this.width = width;
     this.height = height;
@@ -83,112 +86,5 @@ function Spirit(x, y, width, height, colour) {
         ctx.fillStyle = colour;
         ctx.fillRect(this.x, this.y, this.width, this.height);
     }
-    this.colision = function(spirit) {
-        if (((this.x - spirit.x < spirit.width) &&
-            (spirit.x - this.x < this.width)) &&
-            ((this.y - spirit.y < spirit.height) &&
-            (spirit.y - this.y < this.height))){
-
-        	// spirit hiten a ground
-			// then dont move 
-            return true;
-        }
-    }
-    this.shoot = function(){
-        // shoot a bullet
-        let bulletR = new Spirit(this.x + (this.width) + 2, this.y + (this.height/2) - 2, 4, 4,"black");
-        let bulletL = new Spirit(this.x - 2, this.y + (this.height/2) - 2, 4, 4,"black");
-        bulletR.V_x = 5;
-		bulletL.V_x = -5;        
-        bullets.unshift(bulletR);
-        bullets.unshift(bulletL);
-    }
-    this.jump = function () {
-        this.V_y = -5;
-        this.A_y = 0.1;
-    }
-    this.drop = function () {
-        // drop 
-        //      --> upon hiting ground this stops falling
-        if (this.y > Board.canvas.height - ( this.height + 20)){
-            this.y = Board.canvas.height - this.height ;
-            this.A_y = 0.1
-            this.V_x = 0;
-        }
-        else {this.A_y = 0.5;}
-    }
-}
-
-
-
-
-
-function movePlayer() {
-	// 	this are the controls
-    //		up
-    if (Board.keys && Board.keys[38]) {
-        Player.jump();
-        Board.keys[38] = false;
-    }
-    // 		down
-    if (Board.keys && Board.keys[40]) {
-        Player.drop();
-        Board.keys[40] = false;
-	}
-	// 		left
-    if (Board.keys && Board.keys[37]) {
-     	if (Player.V_x> -2){Player.V_x -= 0.03;}
-    }
-    // 		right
-    if (Board.keys && Board.keys[39]){
-        if (Player.V_x < 2){Player.V_x += 0.03;}
-    }
-    // 		space-bar (shoot)
-    if (Board.keys && Board.keys[32]) {
-        Player.shoot();
-        Board.keys[32] = false;
-    }
-}
-
-function reRender() {
-
-	// not that it would matter but this way should
-	// be more responsive sice they register before the actual rendering
-
-	
-
-	// reder the enviroment
-    //
-    Board.clear();
-    Player.update();
-    traps.forEach(function(obsticle, index, object){
-        bullets.forEach(function(bull, index_b, object_b){
-            if (bull.colision(obsticle)){
-                traps.splice(index, 1);
-                bullets.splice(index_b, 1)
-            }
-        })
-        if (obsticle.colision(Player)) {
-            
-            alert("game over");
-        }
-        obsticle.update();
-    })
-    bullets.forEach(function(b){
-    	bullets.splice(4,1);
-        b.update();
-    })
-    platforms.forEach( function(platform, index) {
-    	
-    	if(Player.colision(platform))
-    	{
-    	    Player.V_x = 0;
-    	    Player.V_y = 0;
-    	}
-    	
-    	
-    	movePlayer(); 
-    	platform.update();
-    	
-    });
+    
 }
